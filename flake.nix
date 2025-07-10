@@ -31,6 +31,10 @@
             graphene
             gtk4
           ];
+
+          shellHook = ''
+            export GTK_THEME=Adwaita
+          '';
         };
       });
     };
