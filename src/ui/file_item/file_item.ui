@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="FileItem" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <property name="spacing">4</property>
+    <child>
+      <object class="GtkLabel" id="name">
+        <style>
+          <class name="file-display-name" />
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>
