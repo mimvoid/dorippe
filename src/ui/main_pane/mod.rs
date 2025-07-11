@@ -66,11 +66,11 @@ impl MainPane {
     fn header(&self) -> Box {
         let header = Box::new(gtk::Orientation::Horizontal, 2);
 
-        let go_back = Button::with_label("<");
+        let go_back = Button::from_icon_name("go-previous-symbolic");
         header.append(&go_back);
 
-        let go_forward = Button::with_label(">");
-        header.append(&go_forward);
+        let go_next = Button::from_icon_name("go-next-symbolic");
+        header.append(&go_next);
 
         // let to_parent = Button::with_label("^");
         // header.append(&to_parent);

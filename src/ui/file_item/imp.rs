@@ -5,6 +5,8 @@ use gtk::{glib, subclass::prelude::*};
 pub struct FileItem {
     #[template_child]
     pub name: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub icon: TemplateChild<gtk::Image>,
 }
 
 #[glib::object_subclass]

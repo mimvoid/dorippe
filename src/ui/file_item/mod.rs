@@ -18,9 +18,10 @@ impl FileItem {
         let imp = self.imp();
         imp.name.set_text(file_info.display_name().as_str());
 
-        // match file_info.icon() {
-        //     Some(n) => imp.icon.set_from_gicon(&n),
-        //     None => ()
-        // };
+        imp.icon.set_icon_size(gtk::IconSize::Large);
+        match file_info.icon() {
+            Some(n) => imp.icon.set_from_gicon(&n),
+            None => imp.icon.set_icon_name(Some("text-x-preview")),
+        };
     }
 }
