@@ -1,0 +1,18 @@
+using Gtk 4.0;
+
+template $FileItem: Box {
+  orientation: vertical;
+  spacing: 4;
+
+  Image icon {
+    pixel-size: 64;
+  }
+
+  Label name {
+    width-chars: 12;
+    wrap: true;
+    wrap-mode: char;
+    justify: center;
+    styles ["file-display-name"]
+  }
+}

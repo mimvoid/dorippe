@@ -19,6 +19,8 @@
             pkg-config
             rustc
             cargo
+            blueprint-compiler
+
             gdb
             rustfmt
             clippy

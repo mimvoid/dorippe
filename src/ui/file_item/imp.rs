@@ -1,7 +1,7 @@
 use gtk::{glib, subclass::prelude::*};
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
-#[template(file = "file_item.ui")]
+#[template(file = "data/ui/file_item.blp")]
 pub struct FileItem {
     #[template_child]
     pub name: TemplateChild<gtk::Label>,
