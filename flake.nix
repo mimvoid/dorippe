@@ -19,6 +19,7 @@
             pkg-config
             rustc
             cargo
+            gdb
             rustfmt
             clippy
             librsvg # for icons
