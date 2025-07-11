@@ -21,14 +21,11 @@
             cargo
             rustfmt
             clippy
+            librsvg # for icons
           ];
 
           buildInputs = with pkgs.buildPackages; [
-            dbus
             glib
-            pango
-            gdk-pixbuf
-            graphene
             gtk4
           ];
 
