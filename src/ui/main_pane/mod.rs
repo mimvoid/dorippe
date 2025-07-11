@@ -24,7 +24,8 @@ impl MainPane {
 
         main_pane
             .imp()
-            .file_list
+            .file_view
+            .list
             .set_attributes(Some("standard::*"));
 
         let home_path_buf = glib::home_dir();
@@ -37,12 +38,12 @@ impl MainPane {
     }
 
     pub fn set_file(&self, file: &File) {
-        self.imp().set_file(file);
+        self.imp().file_view.set_file(file);
     }
 
-    pub fn go_to_parent(&self) {
+    pub fn go_to_parent(&mut self) {
         let file;
-        match self.imp().file_list.file() {
+        match self.imp().file_view.list.file() {
             Some(f) => file = f,
             None => return,
         };
@@ -107,17 +108,23 @@ impl MainPane {
 
     fn status_bar(&self) -> Box {
         let status = Box::new(gtk::Orientation::Horizontal, 2);
+        let file_view = &self.imp().file_view;
 
-        let count = Label::new(None);
-        status.append(&count);
-        self.imp()
-            .file_list
-            .bind_property("n-items", &count, "label")
-            .transform_to(|_, number: u32| {
-                let mut num_str = number.to_string();
-                num_str.push_str(" files");
-                Some(glib::GString::from(num_str))
-            })
+        let dir_count = Label::new(None);
+        status.append(&dir_count);
+        file_view
+            .directories
+            .bind_property("n-items", &dir_count, "label")
+            .transform_to(|_, number: u32| Some(glib::GString::from(format!("{number} folders"))))
+            .sync_create()
+            .build();
+
+        let file_count = Label::new(None);
+        status.append(&file_count);
+        file_view
+            .files
+            .bind_property("n-items", &file_count, "label")
+            .transform_to(|_, number: u32| Some(glib::GString::from(format!("{number} files"))))
             .sync_create()
             .build();
 

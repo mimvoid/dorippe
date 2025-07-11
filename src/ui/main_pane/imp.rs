@@ -1,27 +1,30 @@
+use crate::files::FileView;
+
 use gio::File;
 use glib::subclass::types::ObjectSubclass;
-use gtk::{Box, DirectoryList, MultiSelection, glib, subclass::prelude::*};
+use gtk::{Box, MultiSelection, glib, subclass::prelude::*};
 
 #[derive(Debug)]
 pub struct MainPane {
-    pub file_list: DirectoryList,
+    pub file_view: FileView,
     pub selection: MultiSelection,
 }
 
 impl MainPane {
-    pub fn set_file(&self, file: &File) {
-        self.file_list.set_file(Some(file));
-        self.selection.set_model(Some(&self.file_list));
+    pub fn set_file(&mut self, file: &File) {
+        self.file_view.set_file(file);
+        self.selection.set_model(Some(&self.file_view.sorted_file_list));
     }
 }
 
 impl Default for MainPane {
     fn default() -> Self {
-        let file_list = DirectoryList::builder().build();
-        let selection = MultiSelection::new(Some(file_list.clone()));
+        let file_view = FileView::new();
+        let selection = MultiSelection::new(None::<gio::ListModel>);
+        selection.set_model(Some(&file_view.sorted_file_list));
 
         Self {
-            file_list,
+            file_view,
             selection,
         }
     }
