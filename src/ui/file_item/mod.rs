@@ -1,5 +1,5 @@
 mod imp;
-use gtk::{gio, glib, subclass::prelude::*};
+use gtk::{gio, glib, prelude::WidgetExt, subclass::prelude::*};
 
 glib::wrapper! {
     pub struct FileItem(ObjectSubclass<imp::FileItem>)
@@ -18,7 +18,9 @@ impl FileItem {
         let imp = self.imp();
         imp.name.set_text(file_info.display_name().as_str());
 
-        imp.icon.set_icon_size(gtk::IconSize::Large);
+        imp.icon
+            .set_opacity(if file_info.is_hidden() { 0.6 } else { 1.0 });
+
         match file_info.icon() {
             Some(n) => imp.icon.set_from_gicon(&n),
             None => imp.icon.set_icon_name(Some("text-x-preview")),

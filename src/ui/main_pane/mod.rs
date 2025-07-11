@@ -99,6 +99,7 @@ impl MainPane {
         GridView::builder()
             .model(&self.imp().selection)
             .factory(&factory)
+            .enable_rubberband(true)
             .halign(gtk::Align::Start)
             .valign(gtk::Align::Start)
             .hexpand(true)

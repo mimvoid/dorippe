@@ -4,10 +4,16 @@
     <property name="orientation">vertical</property>
     <property name="spacing">4</property>
     <child>
-      <object class="GtkImage" id="icon"></object>
+      <object class="GtkImage" id="icon">
+        <property name="pixel-size">64</property>
+      </object>
     </child>
     <child>
       <object class="GtkLabel" id="name">
+        <property name="width-chars">12</property>
+        <property name="wrap">1</property>
+        <property name="wrap-mode">char</property>
+        <property name="justify">center</property>
         <style>
           <class name="file-display-name" />
         </style>

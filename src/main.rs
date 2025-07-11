@@ -20,6 +20,9 @@ fn init_window(app: &Application) {
     let content = Paned::builder()
         .start_child(&sidebar_pane)
         .end_child(&main_pane)
+        .shrink_start_child(true)
+        .shrink_end_child(true)
+        .position(128)
         .build();
 
     let window = ApplicationWindow::builder()
