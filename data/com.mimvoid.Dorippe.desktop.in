@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Dorippe
+Exec=dorippe
+Icon=com.mimvoid.Dorippe
+Terminal=false
+Type=Application
+Categories=Utility;GTK;Filesystem;
+Keywords=GTK;files;folders;directory;directories;
+StartupNotify=true
+DBusActivatable=true
