@@ -1,9 +1,6 @@
 mod places;
 use super::IconLabel;
-use gtk::{
-    Box, Button,
-    prelude::{BoxExt, OrientableExt},
-};
+use gtk::{Box, Button, prelude::BoxExt};
 
 pub fn build_sidebar() -> Box {
     let sidebar = Box::new(gtk::Orientation::Vertical, 0);
@@ -11,10 +8,10 @@ pub fn build_sidebar() -> Box {
     sidebar
 }
 
-fn sidebar_button() -> (Button, IconLabel) {
-    let icon_label = IconLabel::new();
-    icon_label.set_orientation(gtk::Orientation::Horizontal);
+fn sidebar_button(icon_label: &IconLabel) -> Button {
     icon_label.set_spacing(4);
-
-    (Button::builder().child(&icon_label).build(), icon_label)
+    Button::builder()
+        .child(icon_label)
+        .css_classes(["flat"])
+        .build()
 }

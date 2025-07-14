@@ -1,5 +1,7 @@
-use super::sidebar_button;
-use crate::files::places;
+use crate::{
+    files::places,
+    ui::{IconLabel, sidebar::sidebar_button},
+};
 use gtk::{Box, Button, prelude::BoxExt};
 
 pub fn build_places() -> Box {
@@ -13,28 +15,21 @@ pub fn build_places() -> Box {
 }
 
 fn home_button() -> Button {
-    let (btn, icon_label) = sidebar_button();
-    icon_label.image().set_icon_name(Some("user-home-symbolic"));
-
     let username = glib::user_name();
-    let home_label = username.to_str().unwrap_or_else(|| "Home");
-    icon_label.label().set_text(home_label);
+    let label = username.to_str().unwrap_or_else(|| "Home");
 
-    btn
+    let icon_label = IconLabel::from_icon_name("user-home-symbolic", Some(&label));
+    sidebar_button(&icon_label)
 }
 
 fn recent_button() -> Button {
-    let (btn, icon_label) = sidebar_button();
-    icon_label
-        .image()
-        .set_icon_name(Some("document-open-recent-symbolic"));
-    icon_label.label().set_text("Recent");
-
-    btn
+    let icon_label = IconLabel::from_icon_name("document-open-recent-symbolic", Some("Recent"));
+    sidebar_button(&icon_label)
 }
 
 fn place_button(file_info: &gio::FileInfo) -> Button {
-    let (btn, icon_label) = sidebar_button();
+    let icon_label = IconLabel::new();
+
     match file_info.symbolic_icon() {
         Some(gicon) => icon_label.image().set_from_gicon(&gicon),
         None => icon_label.image().set_icon_name(Some("folder-symbolic")),
@@ -43,7 +38,7 @@ fn place_button(file_info: &gio::FileInfo) -> Button {
         .label()
         .set_text(file_info.display_name().as_str());
 
-    btn
+    sidebar_button(&icon_label)
 }
 
 fn append_places(gbox: &Box) {

@@ -1,12 +1,22 @@
-use gtk::{Image, Label, glib, prelude::BoxExt, subclass::prelude::*};
+use gtk::{Image, Label, glib, subclass::prelude::*};
 
 mod imp {
     use super::*;
 
-    #[derive(Default, Debug)]
+    #[derive(Default, Debug, gtk::CompositeTemplate)]
+    #[template(string = "
+    template $IconLabel : Box {
+        orientation: horizontal;
+
+        Image image {}
+        Label label {}
+    }
+    ")]
     pub struct IconLabel {
-        pub icon: Image,
-        pub label: Label,
+        #[template_child]
+        pub image: TemplateChild<Image>,
+        #[template_child]
+        pub label: TemplateChild<Label>,
     }
 
     #[glib::object_subclass]
@@ -14,6 +24,13 @@ mod imp {
         const NAME: &'static str = "IconLabel";
         type Type = super::IconLabel;
         type ParentType = gtk::Box;
+
+        fn class_init(klass: &mut Self::Class) {
+            klass.bind_template();
+        }
+        fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
+            obj.init_template();
+        }
     }
 
     impl ObjectImpl for IconLabel {}
@@ -35,10 +52,7 @@ impl Default for IconLabel {
 
 impl IconLabel {
     pub fn new() -> Self {
-        let icon_label = Self::default();
-        icon_label.append(icon_label.image());
-        icon_label.append(icon_label.label());
-        icon_label
+        Self::default()
     }
 
     pub fn from_icon_name(icon_name: &str, label: Option<&str>) -> Self {
@@ -54,7 +68,7 @@ impl IconLabel {
     }
 
     pub fn image(&self) -> &Image {
-        &self.imp().icon
+        &self.imp().image
     }
 
     pub fn label(&self) -> &Label {
