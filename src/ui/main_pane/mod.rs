@@ -50,7 +50,7 @@ impl MainPane {
             child.set_file_info(&file_info);
         });
 
-        GridView::builder()
+        let grid = GridView::builder()
             .model(&self.imp().selection)
             .factory(&factory)
             .enable_rubberband(true)
@@ -58,7 +58,25 @@ impl MainPane {
             .valign(gtk::Align::Start)
             .hexpand(true)
             .vexpand(true)
-            .build()
+            .build();
+
+        grid.connect_activate(|grid, position| {
+            if let Some(selection) = grid.model().and_downcast_ref::<gtk::MultiSelection>() {
+                let item = selection
+                    .model()
+                    .and_then(|list| list.item(position))
+                    .and_downcast::<gio::FileInfo>();
+
+                if let Some(file_info) = item {
+                    let _ = grid.activate_action(
+                        "win.go-to-child",
+                        Some(&glib::Variant::from(file_info.display_name().as_str())),
+                    );
+                }
+            };
+        });
+
+        grid
     }
 
     fn status_bar(&self, directories: &gtk::FilterListModel, files: &gtk::FilterListModel) -> Box {
