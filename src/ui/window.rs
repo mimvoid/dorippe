@@ -1,9 +1,11 @@
 use crate::files::FileBrowser;
 use gio::prelude::FileExt;
-use gtk::{glib, prelude::GtkWindowExt, subclass::prelude::*};
+use glib::object::IsA;
+use gtk::subclass::prelude::*;
 
 mod imp {
     use super::*;
+    use std::path::Path;
 
     #[derive(Debug, Default)]
     pub struct DorippeWindow {
@@ -15,6 +17,46 @@ mod imp {
         const NAME: &'static str = "DorippeWindow";
         type Type = super::DorippeWindow;
         type ParentType = gtk::ApplicationWindow;
+
+        fn class_init(klass: &mut Self::Class) {
+            klass.install_action(
+                "win.go-to-path",
+                Some(glib::VariantTy::STRING),
+                move |win, _, param| {
+                    if let Some(str) = param.and_then(|v| v.str()) {
+                        win.set_file(&gio::File::for_path(&Path::new(str)));
+                    };
+                },
+            );
+
+            klass.install_action(
+                "win.go-to-child",
+                Some(glib::VariantTy::STRING),
+                move |win, _, param| {
+                    if let Some(name) = param.and_then(|v| v.str()) {
+                        let parent = match win.file() {
+                            Some(p) => p,
+                            None => gio::File::for_path(glib::current_dir().as_path()),
+                        };
+
+                        let child_file = parent.resolve_relative_path(Path::new(name));
+                        win.set_file(&child_file);
+                    };
+                },
+            );
+
+            klass.install_action("win.go-to-parent", None, move |win, _, _| {
+                win.go_to_parent();
+            });
+
+            klass.install_action("win.go-home", None, move |win, _, _| {
+                win.go_home();
+            });
+        }
+
+        fn new() -> Self {
+            Self::default()
+        }
     }
 
     impl ObjectImpl for DorippeWindow {}
@@ -26,25 +68,18 @@ mod imp {
 glib::wrapper! {
     pub struct DorippeWindow(ObjectSubclass<imp::DorippeWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow,
-        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
-}
-
-impl Default for DorippeWindow {
-    fn default() -> Self {
-        glib::Object::new()
-    }
+        @implements gio::ActionGroup, gio::ActionMap;
 }
 
 impl DorippeWindow {
-    pub fn new(app: &gtk::Application) -> Self {
-        let win = Self::default();
-        win.set_application(Some(app));
-        win.set_title(Some("Dorippe"));
-        win.imp().file_browser.list.set_attributes(Some("standard::*"));
-        win
+    pub fn new<P: IsA<gtk::Application>>(app: &P) -> Self {
+        glib::Object::builder::<DorippeWindow>()
+            .property("application", app)
+            .property("title", "Dorippe")
+            .build()
     }
 
-    pub fn new_for_home(app: &gtk::Application) -> Self {
+    pub fn new_for_home<P: IsA<gtk::Application>>(app: &P) -> Self {
         let win = Self::new(app);
         win.imp().file_browser.set_to_home();
         win
@@ -54,11 +89,19 @@ impl DorippeWindow {
         return &self.imp().file_browser;
     }
 
-    pub fn set_file(&mut self, file: &gio::File) {
+    pub fn file(&self) -> Option<gio::File> {
+        self.imp().file_browser.list.file()
+    }
+
+    pub fn set_file(&self, file: &gio::File) {
         self.imp().file_browser.set_file(file);
     }
 
-    pub fn go_to_parent(&mut self) {
+    pub fn set_path(&self, path: &std::path::Path) {
+        self.set_file(&gio::File::for_path(path));
+    }
+
+    pub fn go_to_parent(&self) {
         let file;
         match self.imp().file_browser.list.file() {
             Some(f) => file = f,
@@ -69,5 +112,9 @@ impl DorippeWindow {
             Some(p) => self.set_file(&p),
             None => (),
         };
+    }
+
+    pub fn go_home(&self) {
+        self.imp().file_browser.set_to_home();
     }
 }

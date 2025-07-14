@@ -15,7 +15,7 @@ pub struct FileBrowser {
 
 impl Default for FileBrowser {
     fn default() -> Self {
-        let file_list = DirectoryList::new(None, None::<&File>);
+        let file_list = DirectoryList::new(Some("standard::"), None::<&File>);
 
         let sorted_file_list = SortListModel::builder()
             .model(&file_list)
