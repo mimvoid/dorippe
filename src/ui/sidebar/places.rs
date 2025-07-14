@@ -23,11 +23,9 @@ fn place_button(file_info: &gio::FileInfo, path: &std::path::Path) -> Button {
 
     match file_info.symbolic_icon() {
         Some(gicon) => icon_label.image().set_from_gicon(&gicon),
-        None => icon_label.image().set_icon_name(Some("folder-symbolic")),
+        None => icon_label.set_icon_name("folder-symbolic"),
     };
-    icon_label
-        .label()
-        .set_text(file_info.display_name().as_str());
+    icon_label.set_text(file_info.display_name().as_str());
 
     Button::builder()
         .child(&icon_label)

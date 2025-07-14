@@ -1,4 +1,4 @@
-use gtk::{Image, Label, glib, subclass::prelude::*};
+use gtk::{Image, Label, subclass::prelude::*};
 
 mod imp {
     use super::*;
@@ -57,13 +57,10 @@ impl IconLabel {
 
     pub fn from_icon_name(icon_name: &str, label: Option<&str>) -> Self {
         let icon_label = Self::new();
-        icon_label.image().set_icon_name(Some(icon_name));
-
-        match label {
-            Some(text) => icon_label.label().set_text(text),
-            None => (),
+        icon_label.set_icon_name(icon_name);
+        if let Some(text) = label {
+            icon_label.set_text(text);
         };
-
         icon_label
     }
 
@@ -73,5 +70,19 @@ impl IconLabel {
 
     pub fn label(&self) -> &Label {
         &self.imp().label
+    }
+
+    pub fn icon_name(&self) -> Option<glib::GString> {
+        self.image().icon_name()
+    }
+    pub fn set_icon_name(&self, icon_name: &str) {
+        self.image().set_icon_name(Some(icon_name));
+    }
+
+    pub fn text(&self) -> glib::GString {
+        self.label().label()
+    }
+    pub fn set_text(&self, str: &str) {
+        self.label().set_text(str);
     }
 }
