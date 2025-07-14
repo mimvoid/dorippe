@@ -6,14 +6,14 @@ use gtk::{DirectoryList, FilterListModel, SortListModel};
 use std::path::Path;
 
 #[derive(Debug)]
-pub struct FileView {
+pub struct FileBrowser {
     pub list: DirectoryList,
     pub sorted_file_list: SortListModel,
     pub directories: FilterListModel,
     pub files: FilterListModel,
 }
 
-impl Default for FileView {
+impl Default for FileBrowser {
     fn default() -> Self {
         let file_list = DirectoryList::new(None, None::<&File>);
 
@@ -41,20 +41,25 @@ impl Default for FileView {
     }
 }
 
-impl FileView {
+impl FileBrowser {
     pub fn new() -> Self {
         Self::default()
     }
 
     pub fn for_home() -> Self {
         let home_path_buf = glib::home_dir();
-        FileView::from_path(home_path_buf.as_path())
+        FileBrowser::from_path(home_path_buf.as_path())
     }
 
     pub fn from_path(path: &Path) -> Self {
         let file_view = Self::default();
         file_view.set_file(&File::for_path(path));
         file_view
+    }
+
+    pub fn set_to_home(&self) {
+        self.list
+            .set_file(Some(&File::for_path(glib::home_dir().as_path())));
     }
 
     pub fn set_file(&self, file: &File) {

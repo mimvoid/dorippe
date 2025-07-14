@@ -1,7 +1,7 @@
 mod imp;
+use crate::files::FileBrowser;
 use crate::ui::file_item::FileItem;
 
-use gio::File;
 use glib::object::{Cast, CastNone};
 use gtk::{Box, Button, GridView, Label, prelude::*, subclass::prelude::*};
 
@@ -18,49 +18,22 @@ impl Default for MainPane {
 }
 
 impl MainPane {
-    pub fn new() -> Self {
+    pub fn new(browser: &FileBrowser) -> Self {
         let main_pane = Self::default();
         main_pane.set_orientation(gtk::Orientation::Vertical);
-
         main_pane
             .imp()
-            .file_view
-            .list
-            .set_attributes(Some("standard::*"));
+            .selection
+            .set_model(Some(&browser.sorted_file_list));
 
-        let home_path_buf = glib::home_dir();
-        let dir = File::for_path(home_path_buf.as_path());
-        main_pane.set_file(&dir);
-
-        main_pane.build_main_pane();
-
-        main_pane
-    }
-
-    pub fn set_file(&self, file: &File) {
-        self.imp().file_view.set_file(file);
-    }
-
-    pub fn go_to_parent(&mut self) {
-        let file;
-        match self.imp().file_view.list.file() {
-            Some(f) => file = f,
-            None => return,
-        };
-
-        match file.parent() {
-            Some(p) => self.set_file(&p),
-            None => (),
-        };
-    }
-
-    fn build_main_pane(&self) {
-        let list_widget = self.file_listings();
+        let list_widget = main_pane.file_listings();
         let list_scroller = gtk::ScrolledWindow::builder().child(&list_widget).build();
 
-        self.append(&self.header());
-        self.append(&list_scroller);
-        self.append(&self.status_bar());
+        main_pane.append(&main_pane.header());
+        main_pane.append(&list_scroller);
+        main_pane.append(&main_pane.status_bar(&browser.directories, &browser.files));
+
+        main_pane
     }
 
     fn header(&self) -> Box {
@@ -107,14 +80,12 @@ impl MainPane {
             .build()
     }
 
-    fn status_bar(&self) -> Box {
+    fn status_bar(&self, directories: &gtk::FilterListModel, files: &gtk::FilterListModel) -> Box {
         let status = Box::new(gtk::Orientation::Horizontal, 2);
-        let file_view = &self.imp().file_view;
 
         let dir_count = Label::new(None);
         status.append(&dir_count);
-        file_view
-            .directories
+        directories
             .bind_property("n-items", &dir_count, "label")
             .transform_to(|_, number: u32| Some(glib::GString::from(format!("{number} folders"))))
             .sync_create()
@@ -122,8 +93,7 @@ impl MainPane {
 
         let file_count = Label::new(None);
         status.append(&file_count);
-        file_view
-            .files
+        files
             .bind_property("n-items", &file_count, "label")
             .transform_to(|_, number: u32| Some(glib::GString::from(format!("{number} files"))))
             .sync_create()

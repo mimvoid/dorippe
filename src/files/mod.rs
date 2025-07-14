@@ -1,8 +1,8 @@
 mod sorters;
 mod filters;
 
-mod file_view;
-pub use file_view::FileView;
+mod file_browser;
+pub use file_browser::FileBrowser;
 
 mod places;
 pub use places::places;

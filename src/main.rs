@@ -2,7 +2,7 @@ mod files;
 mod ui;
 
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Paned, glib};
+use gtk::{Application, Paned, glib};
 
 fn main() -> glib::ExitCode {
     let app = Application::builder()
@@ -14,8 +14,10 @@ fn main() -> glib::ExitCode {
 }
 
 fn init_window(app: &Application) {
+    let window = ui::DorippeWindow::new_for_home(app);
+
     let sidebar_pane = ui::build_sidebar();
-    let main_pane = ui::MainPane::new();
+    let main_pane = ui::MainPane::new(window.file_browser());
 
     let content = Paned::builder()
         .start_child(&sidebar_pane)
@@ -25,11 +27,6 @@ fn init_window(app: &Application) {
         .position(128)
         .build();
 
-    let window = ApplicationWindow::builder()
-        .application(app)
-        .title("Dorippe")
-        .child(&content)
-        .build();
-
+    window.set_child(Some(&content));
     window.present();
 }
