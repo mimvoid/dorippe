@@ -1,17 +1,33 @@
+mod imp;
 mod places;
-use super::IconLabel;
-use gtk::{Box, Button, prelude::BoxExt};
+use gio::subclass::prelude::*;
+use gtk::prelude::*;
 
-pub fn build_sidebar() -> Box {
-    let sidebar = Box::new(gtk::Orientation::Vertical, 0);
-    sidebar.append(&places::build_places());
-    sidebar
+glib::wrapper! {
+    pub struct Sidebar(ObjectSubclass<imp::Sidebar>)
+        @extends gtk::Widget, gtk::Box,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-fn sidebar_button(icon_label: &IconLabel) -> Button {
-    icon_label.set_spacing(4);
-    Button::builder()
-        .child(icon_label)
-        .css_classes(["flat"])
-        .build()
+impl Default for Sidebar {
+    fn default() -> Self {
+        glib::Object::new()
+    }
+}
+
+impl Sidebar {
+    pub fn new() -> Self {
+        let sidebar = Self::default();
+        let imp = sidebar.imp();
+
+        let username = glib::user_name();
+        match username.to_str() {
+            Some(str) => imp.home_label.set_text(str),
+            None => (),
+        }
+        imp.home_button.set_tooltip_text(glib::home_dir().to_str());
+
+        sidebar.append(&places::build_places());
+        sidebar
+    }
 }

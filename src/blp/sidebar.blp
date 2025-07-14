@@ -1,0 +1,49 @@
+using Gtk 4.0;
+
+template $Sidebar : Box {
+  orientation: vertical;
+  spacing: 0;
+
+  Box bookmarks {
+    orientation: vertical;
+    spacing: 0;
+
+    Button home_button {
+      styles ["flat"]
+
+      Box {
+        orientation: horizontal;
+        spacing: 4;
+
+        Image {
+          icon-name: "user-home-symbolic";
+        }
+        Label home_label {
+          label: _("Home");
+        }
+      }
+    }
+
+    Button {
+      tooltip-text: _("Browse recent files");
+      styles ["flat"]
+
+      Box {
+        orientation: horizontal;
+        spacing: 4;
+
+        Image {
+          icon-name: "document-open-recent-symbolic";
+        }
+        Label {
+          label: _("Recent");
+        }
+      }
+    }
+  }
+
+  Box disks {
+    orientation: vertical;
+    spacing: 0;
+  }
+}

@@ -16,7 +16,7 @@ fn main() -> glib::ExitCode {
 fn init_window(app: &Application) {
     let window = ui::DorippeWindow::new_for_home(app);
 
-    let sidebar_pane = ui::build_sidebar();
+    let sidebar_pane = ui::Sidebar::new();
     let main_pane = ui::MainPane::new(window.file_browser());
 
     let panes = Paned::builder()
