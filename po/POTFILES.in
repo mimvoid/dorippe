@@ -3,3 +3,4 @@
 data/com.mimvoid.Dorippe.desktop.in
 data/com.mimvoid.Dorippe.gschema.xml
 data/com.mimvoid.Dorippe.metainfo.xml.in
+src/blp/toolbar.blp
