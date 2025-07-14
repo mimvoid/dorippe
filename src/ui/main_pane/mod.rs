@@ -3,7 +3,7 @@ use crate::files::FileBrowser;
 use crate::ui::file_item::FileItem;
 
 use glib::object::{Cast, CastNone};
-use gtk::{Box, Button, GridView, Label, prelude::*, subclass::prelude::*};
+use gtk::{Box, GridView, Label, prelude::*, subclass::prelude::*};
 
 glib::wrapper! {
     pub struct MainPane(ObjectSubclass<imp::MainPane>)
@@ -29,29 +29,10 @@ impl MainPane {
         let list_widget = main_pane.file_listings();
         let list_scroller = gtk::ScrolledWindow::builder().child(&list_widget).build();
 
-        main_pane.append(&main_pane.header());
         main_pane.append(&list_scroller);
         main_pane.append(&main_pane.status_bar(&browser.directories, &browser.files));
 
         main_pane
-    }
-
-    fn header(&self) -> Box {
-        let header = Box::new(gtk::Orientation::Horizontal, 2);
-
-        let go_back = Button::from_icon_name("go-previous-symbolic");
-        header.append(&go_back);
-
-        let go_next = Button::from_icon_name("go-next-symbolic");
-        header.append(&go_next);
-
-        // let to_parent = Button::with_label("^");
-        // header.append(&to_parent);
-        // to_parent .connect_clicked(|_go_back| {
-        //     self.go_to_parent();
-        // });
-
-        header
     }
 
     fn file_listings(&self) -> GridView {

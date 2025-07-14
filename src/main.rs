@@ -19,13 +19,17 @@ fn init_window(app: &Application) {
     let sidebar_pane = ui::build_sidebar();
     let main_pane = ui::MainPane::new(window.file_browser());
 
-    let content = Paned::builder()
+    let panes = Paned::builder()
         .start_child(&sidebar_pane)
         .end_child(&main_pane)
         .shrink_start_child(true)
         .shrink_end_child(true)
         .position(128)
         .build();
+
+    let content = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    content.append(&ui::Toolbar::new());
+    content.append(&panes);
 
     window.set_child(Some(&content));
     window.present();

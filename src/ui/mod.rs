@@ -10,3 +10,6 @@ pub use icon_label::IconLabel;
 
 mod sidebar;
 pub use sidebar::build_sidebar;
+
+mod toolbar;
+pub use toolbar::Toolbar;

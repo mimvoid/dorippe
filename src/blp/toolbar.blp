@@ -1,0 +1,19 @@
+using Gtk 4.0;
+
+template $Toolbar : Box {
+  orientation: horizontal;
+
+  Button go_back {
+    icon-name: "go-previous-symbolic";
+    styles ["flat"]
+  }
+
+  Button go_next {
+    icon-name: "go-next-symbolic";
+    styles ["flat"]
+  }
+
+  SearchBar search_bar {
+    child: SearchEntry search_entry {};
+  }
+}
