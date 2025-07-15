@@ -15,6 +15,13 @@ template $Toolbar : Box {
     styles ["flat"]
   }
 
+  Button {
+    action-name: "win.go-to-parent";
+    icon-name: "go-up-symbolic";
+    tooltip-text: _("Go to parent directory");
+    styles ["flat"]
+  }
+
   SearchBar search_bar {
     child: SearchEntry search_entry {};
   }
