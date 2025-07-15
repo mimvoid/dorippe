@@ -34,13 +34,18 @@ mod imp {
                 Some(glib::VariantTy::STRING),
                 move |win, _, param| {
                     if let Some(name) = param.and_then(|v| v.str()) {
-                        let parent = match win.file() {
-                            Some(p) => p,
-                            None => gio::File::for_path(glib::current_dir().as_path()),
-                        };
+                        let parent = win
+                            .file()
+                            .unwrap_or_else(|| gio::File::for_path(glib::current_dir().as_path()));
 
-                        let child_file = parent.resolve_relative_path(Path::new(name));
-                        win.set_file(&child_file);
+                        let child = parent.child(&Path::new(name));
+                        let file_type = child
+                            .query_file_type(gio::FileQueryInfoFlags::NONE, gio::Cancellable::NONE);
+
+                        match file_type {
+                            gio::FileType::Directory => win.set_file(&child),
+                            _ => (), // TODO: open non-directory files
+                        };
                     };
                 },
             );
